@@ -11,18 +11,7 @@
 | **No Logging** | Missing flow logs for ACL | Low | Check VPC Flow Logs configuration |
 | **Inconsistent Egress/Ingress** | Mismatched inbound/outbound rules | Medium | Compare egress vs ingress rule counts |
 
-## **2. EC2 Instance Vulnerabilities**
-
-| Vulnerability | Description | Severity | Detection Command |
-|---------------|-------------|----------|------------------|
-| **Publicly Accessible** | Public IP + permissive security group | Critical | `aws ec2 describe-instances --query "Reservations[*].Instances[*].{ID:InstanceId, PublicIP:PublicIpAddress, State:State.Name}[?PublicIP!=null]" --output table` |
-| **No Security Updates** | Outdated AMI/patches | High | Check AMI age with `aws ec2 describe-images --image-ids` |
-| **Exposed User Data** | Sensitive data in user-data scripts | High | `aws ec2 describe-instance-attribute --instance-id <id> --attribute userData` |
-| **Missing IAM Role** | EC2 without IAM instance profile | Medium | `aws ec2 describe-instances --query "Reservations[*].Instances[*].[InstanceId, IamInstanceProfile.Arn]" --output table` |
-| **Unencrypted Volumes** | EBS volumes without encryption | Critical | `aws ec2 describe-volumes --filters Name=attachment.instance-id,Values=<id>` |
-| **Open Management Ports** | SSH/RDP exposed to 0.0.0.0/0 | Critical | Check associated security groups |
-
-## **3. Subnet Vulnerabilities**
+## **2. Subnet Vulnerabilities**
 
 | Vulnerability | Description | Severity | Detection Command |
 |---------------|-------------|----------|------------------|
@@ -32,7 +21,7 @@
 | **Overlapping CIDRs** | VPC peering with overlapping ranges | Critical | Check VPC peering connections |
 | **Default VPC Usage** | Using AWS default VPC for production | Medium | `aws ec2 describe-vpcs --filters "Name=isDefault,Values=true"` |
 
-## **4. Route Table Vulnerabilities**
+## **3. Route Table Vulnerabilities**
 
 | Vulnerability | Description | Severity | Detection Command |
 |---------------|-------------|----------|------------------|
@@ -42,7 +31,7 @@
 | **Route Propagation Issues** | VPN/DX routes not propagating | Medium | Check route propagation flags |
 | **Inconsistent Routing** | Multiple route tables with different paths | Medium | Compare routes across route tables |
 
-## **5. Security Group Vulnerabilities**
+## **4. Security Group Vulnerabilities**
 
 | Vulnerability | Description | Severity | Detection Command |
 |---------------|-------------|----------|------------------|
@@ -54,7 +43,7 @@
 | **Referencing Non-Existent SGs** | SG rules referencing deleted groups | Medium | Check UserIdGroupPairs |
 | **Excessive Rules** | More than 50 rules per SG (limits) | Low | Count rules per SG |
 
-## **6. VPC-Level Vulnerabilities**
+## **5. VPC-Level Vulnerabilities**
 
 | Vulnerability | Description | Severity |
 |---------------|-------------|----------|
